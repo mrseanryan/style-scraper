@@ -10,7 +10,7 @@ import puppeteer from 'puppeteer';
 
     // Launch the browser and open a new blank page
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         timeout: 5000
     });
 
@@ -29,6 +29,112 @@ import puppeteer from 'puppeteer';
         const pathToScreenshot = './temp/screenshot.jpg'
         console.log(`Saving screenshot to: ${pathToScreenshot}`)
         await page.screenshot({ type: 'jpeg', path: pathToScreenshot, fullPage: true });
+
+        console.log(`Get element by co-ordinates (${x}, ${y})`)
+        console.log(await page.evaluate(() => {
+            // return elemFromPointXY().tagName;
+            return document.elementFromPoint(960, 360).tagName // xxx
+        }));
+
+        console.log(await page.evaluate(() => {
+            // return elemFromPointXY()
+            return document.elementsFromPoint(960, 360)
+                .map(({ tagName }) => tagName).reverse().join(' > ');
+        }));
+
+        console.log(await page.evaluate(() => { // evaluate runs in the browser, not node, so has its own global scope!
+            const elements = document.elementsFromPoint(960, 360)
+            // const lastElement = elements[elements.length - 1]
+
+            class Styles {
+                // Returns a dummy iframe with no styles or content
+                // This allows us to get default styles from the browser for an element
+                static getStylesIframe() {
+                    if (typeof window.blankIframe != 'undefined') {
+                        return window.blankIframe;
+                    }
+
+                    window.blankIframe = document.createElement('iframe');
+                    document.body.appendChild(window.blankIframe);
+
+                    return window.blankIframe;
+                }
+
+                // Turns a CSSStyleDeclaration into a regular object, as all values become "" after a node is removed
+                static getStylesObject(node, parentWindow) {
+                    const styles = parentWindow.getComputedStyle(node);
+                    let stylesObject = {};
+
+                    for (let i = 0; i < styles.length; i++) {
+                        const property = styles[i];
+                        stylesObject[property] = styles[property];
+                    }
+
+                    return stylesObject;
+                }
+
+                // Returns a styles object with the browser's default styles for the provided node
+                static getDefaultStyles(node) {
+                    const iframe = Styles.getStylesIframe();
+                    const iframeDocument = iframe.contentDocument;
+                    const targetElement = iframeDocument.createElement(node.tagName);
+
+                    iframeDocument.body.appendChild(targetElement);
+                    const defaultStyles = Styles.getStylesObject(targetElement, iframe.contentWindow);
+
+                    targetElement.remove();
+
+                    return defaultStyles;
+                }
+
+                // Returns a styles object with only the styles applied by the user's CSS that differ from the browser's default styles
+                static getUserStyles(node) {
+                    const defaultStyles = Styles.getDefaultStyles(node);
+                    const styles = Styles.getStylesObject(node, window);
+                    let userStyles = {};
+
+                    for (let property in defaultStyles) {
+                        if (styles[property] != defaultStyles[property]) {
+                            userStyles[property] = styles[property];
+                        }
+                    }
+
+                    return userStyles;
+                }
+            };
+
+            const filteredStyles = {};
+
+            elements.forEach(element => {
+                // filters out 'default' styles that are noise
+                const userStyles = Styles.getUserStyles(element)
+
+                const interestingStyles = {
+                    "font-family": "fontFamilies",
+                    "font-size": "fontSizes",
+                    "background-color": "backgroundColors",
+                    "color": "colors",
+                    "border*color": "borderColors"
+                }
+
+                for (const userStyle in userStyles) {
+                    if (!userStyles.hasOwnProperty(userStyle))
+                        return;
+                    if (interestingStyles[userStyle]) {
+                        const target = interestingStyles[userStyle]
+                        if (!filteredStyles[target]) {
+                            filteredStyles[target] = []
+                        }
+                        const value = userStyles[userStyle]
+                        if (!filteredStyles[target].includes(value)) {
+                            filteredStyles[target].push(value)
+                        }
+                    }
+                }
+            });
+
+            return filteredStyles
+        }));
 
         // Locate the full title with a unique string
         // const textSelector = await page.waitForSelector(
