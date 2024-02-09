@@ -1,5 +1,8 @@
 # style-scraper
-Scrape styles from a website [fonts and colors]
+Scrape styles from a website using reliable computed styling via a headless browser [fonts, colors, border styles ...]
+
+- correct 'actual' computed styles can be extracted for elements on the webpage
+- elements can be found by co-ordinates (offset from top-left of page)
 
 ## Example output
 
