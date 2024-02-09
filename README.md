@@ -40,12 +40,20 @@ nvm install 18
 nvm use 18
 ```
 
+### Install
+
 ```
 ./install.sh
 ```
 
 ```
 npm test
+```
+
+## Usage
+
+```
+./go.sh <URL to website>
 ```
 
 ## References
