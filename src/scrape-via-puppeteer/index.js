@@ -8,6 +8,8 @@ import puppeteer from 'puppeteer';
     }
     const url = args[0];
 
+    const x = 960, y = 360; // TODO xxx take from args
+
     // Launch the browser and open a new blank page
     const browser = await puppeteer.launch({
         headless: true,
@@ -114,14 +116,18 @@ import puppeteer from 'puppeteer';
                     "font-size": "fontSizes",
                     "background-color": "backgroundColors",
                     "color": "colors",
-                    "border*color": "borderColors"
+                    // "border*color": "borderColors"
                 }
 
                 for (const userStyle in userStyles) {
                     if (!userStyles.hasOwnProperty(userStyle))
                         return;
-                    if (interestingStyles[userStyle]) {
-                        const target = interestingStyles[userStyle]
+
+                    const isBorderColor = (userStyle.includes('border') && userStyle.includes('color'))
+                    const isInteresting = interestingStyles[userStyle] || isBorderColor
+
+                    if (isInteresting) {
+                        const target = isBorderColor ? 'borderColors' : interestingStyles[userStyle]
                         if (!filteredStyles[target]) {
                             filteredStyles[target] = []
                         }
