@@ -1,0 +1,30 @@
+{
+  "name": "style-scraper",
+  "version": "1.0.0",
+  "description": "Scrape styles from a website, including fonts and colors",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/scrape-via-puppeteer/index.js",
+    "test": "node src/scrape-via-puppeteer/test-puppeteer.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrseanryan/style-scraper.git"
+  },
+  "keywords": [
+    "scraper",
+    "styles",
+    "puppeteer",
+    "webscraper"
+  ],
+  "author": "sean.ryan@mendix.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mrseanryan/style-scraper/issues"
+  },
+  "homepage": "https://github.com/mrseanryan/style-scraper#readme",
+  "dependencies": {
+    "puppeteer": "^22.0.0"
+  },
+  "type": "module"
+}
