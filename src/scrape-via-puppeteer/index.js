@@ -146,8 +146,6 @@ const createBrowserCode = (x, y) => `
         // Passing functions and args to page.evaluate() is tricky - here we serialize the code as a string
         const browserResult = await page.evaluate(`(async() => {
             ${createBrowserCode(x, y)};
-
-            return 666; // eval is evil
          })()`);
         console.log(browserResult);
     } catch (e) {
