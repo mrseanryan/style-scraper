@@ -1,29 +1,45 @@
 # style-scraper
 Scrape styles from a website using reliable computed styling via a headless browser [fonts, colors, border styles ...]
 
-- correct 'actual' computed styles can be extracted for elements on the webpage
-- elements can be found by co-ordinates (offset from top-left of page)
+- programatically inspect elements of the website, without a visible browser
+- extract correct *actual* computed styles for elements on the webpage
+- elements found by co-ordinates (offset from top-left of page)
+- screenshot of the full vertical length of the webpage (automatic scrolling)
 
-## Example output
+## Example execution
+
+COMMAND:
 
 ```
+./go.sh https://everydayphotos.net 180 300
+```
+
+OUTPUT:
+
+```
+> style-scraper@1.0.0 start
+> node src/scrape-via-puppeteer/index.js https://everydayphotos.net 180 300
+
 Saving screenshot to: ./temp/screenshot.jpg
-Get element by co-ordinates (960, 360)
-SPAN
-HTML > BODY > MAIN > SENSES-GLOBAL-SITES > SENSES-GLOBAL-SITES-PAGE-RENDERER > DIV > PAGE-HOME > FEATURE-ENTITIES-RENDERER > SECTION > FEATURE-PERSONAL-WEBCONTAINER > DIV > DIV > FEATURE-PANORAMA-BANNER > DIV > DIV > DIV > A > DIV > DIV > IMG > SFC-CARD > SFC-CARD-CONTENT > SFC-BUTTON > BUTTON > SPAN
+Get element by co-ordinates (180, 300)
+A
+HTML > IMG > BODY > DIV > DIV > DIV > A
 {
-  borderColors: [
-    'rgb(255, 255, 255)',
-    'rgba(0, 0, 0, 0)',
-    'rgb(32, 33, 34)',
-    'rgb(0, 0, 238)'
+  backgroundColors: [ 'rgba(0, 0, 0, 0.6)', 'rgb(0, 0, 0)' ],
+  borderColors: [ 'rgb(255, 255, 255)', 'rgb(0, 0, 238)' ],
+  colors: [ 'rgb(255, 255, 255)', 'rgb(0, 0, 238)' ],
+  fontFamilies: [
+    'Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif'
   ],
-  colors: [ 'rgb(255, 255, 255)', 'rgb(32, 33, 34)', 'rgb(0, 0, 238)' ],
-  fontFamilies: [ 'Myriad, "Segoe UI", "Helvetica Neue", arial, sans-serif' ],
-  fontSizes: [ '19px' ],
-  backgroundColors: [ 'rgb(250, 100, 0)', 'rgb(25, 25, 124)' ]
+  fontSizes: [ '20px' ]
 }
 ```
+
+SCREENSHOT (cropped):
+
+![everydayphotos.net screenshot](./images/screenshot-edp-truncated.jpg)
+
+- the screenshot includes the full vertical length of the website, by automatically scrolling
 
 ## Setup
 
@@ -56,8 +72,10 @@ npm test
 ## Usage
 
 ```
-./go.sh <URL to website>
+./go.sh <URL to website> <x> <y>
 ```
+
+- where x and y are the co-ordinates at which to inspect the webpage for style details.
 
 ## References
 
