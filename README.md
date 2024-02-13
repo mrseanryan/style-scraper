@@ -87,6 +87,11 @@ npm test
 
 - where x and y are the co-ordinates at which to inspect the webpage for style details.
 
+## Trouble-shooting
+
+1. Error on Ubuntu: "error while loading shared libraries: libgbm.so.1: cannot open shared object file: Puppeteer in Nodejs on AWS EC2 instance"
+    - solution: `sudo apt-get install -y libgbm-dev`
+
 ## References
 
 - https://pptr.dev/
